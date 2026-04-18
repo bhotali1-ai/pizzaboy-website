@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PizzaBoy.ai — AI Receptionist for Pizza Shops</title>
+<meta name="description" content="PizzaBoy.ai answers every call 24/7, takes orders, upsells, and books appointments — AI trained specifically for pizza shops.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D62828;--red-dark:#A31F1F;--red-light:#FDEAEA;
+  --orange:#F46036;--yellow:#F7B731;
+  --dark:#111111;--dark2:#1C1C1C;--dark3:#2A2A2A;--dark4:#333;
+  --white:#FFFFFF;--off:#FFF8F0;--gray:#888;--lightgray:#C8C0B8;
+  --green:#27AE60;--green-light:#E8F8EE;
+  --font-head:'Oswald',sans-serif;
+  --font-body:'Nunito',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--dark);color:var(--white);overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(17,17,17,.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(214,40,40,.3);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--font-head);font-size:1.5rem;font-weight:700;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo em{color:var(--red);font-style:normal}
+.logo-badge{background:var(--red);color:var(--white);font-size:9px;padding:2px 6px;border-radius:20px;font-family:var(--font-body);font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--lightgray);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s}
+.nav-links a:hover{color:var(--yellow)}
+.nav-cta{background:var(--red);color:var(--white);padding:9px 22px;border-radius:6px;font-weight:700;font-size:14px;text-decoration:none;transition:background .2s;white-space:nowrap}
+.nav-cta:hover{background:var(--red-dark)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:2px;background:var(--white);border-radius:2px;transition:all .3s}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 2rem 4rem;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(214,40,40,.15) 0%,transparent 60%)}
+.hero-pizza{position:absolute;font-size:400px;opacity:.03;top:50%;left:50%;transform:translate(-50%,-50%) rotate(15deg);pointer-events:none;user-select:none}
+.hero-content{position:relative;max-width:800px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(214,40,40,.15);border:1px solid rgba(214,40,40,.3);color:var(--orange);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:1.5rem}
+.hero h1{font-family:var(--font-head);font-size:clamp(3rem,8vw,5.5rem);font-weight:700;line-height:1;margin-bottom:1.5rem;letter-spacing:1px}
+.hero h1 em{color:var(--red);font-style:normal;display:block}
+.hero p{font-size:1.15rem;color:var(--lightgray);max-width:560px;margin:0 auto 2.5rem;line-height:1.7}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--red);color:var(--white);padding:15px 36px;border-radius:8px;font-weight:800;font-size:15px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:var(--font-body)}
+.btn-primary:hover{background:var(--red-dark);transform:translateY(-2px)}
+.btn-secondary{background:transparent;color:var(--white);padding:15px 36px;border-radius:8px;font-weight:700;font-size:15px;text-decoration:none;border:2px solid rgba(255,255,255,.2);transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:rgba(255,255,255,.5)}
+.hero-note{margin-top:1.5rem;font-size:13px;color:var(--gray)}
+
+/* ── STATS ── */
+.stats{background:var(--red);padding:1.25rem 2rem;display:flex;justify-content:center;flex-wrap:wrap}
+.stat{padding:.75rem 2.5rem;text-align:center;border-right:1px solid rgba(255,255,255,.2)}
+.stat:last-child{border-right:none}
+.stat-num{font-family:var(--font-head);font-size:2rem;font-weight:700}
+.stat-label{font-size:11px;color:rgba(255,255,255,.8);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+
+/* ── SECTIONS ── */
+section{padding:5rem 2rem}
+.container{max-width:1100px;margin:0 auto}
+.section-label{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:.75rem;text-align:center}
+.section-title{font-family:var(--font-head);font-size:clamp(2rem,4vw,2.8rem);font-weight:700;text-align:center;margin-bottom:.5rem}
+.section-sub{color:var(--gray);text-align:center;margin-bottom:3.5rem;font-size:1rem;max-width:500px;margin-left:auto;margin-right:auto}
+
+/* ── HOW IT WORKS ── */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:3rem}
+.how-card{background:var(--dark2);border:1px solid var(--dark3);border-radius:14px;padding:2rem 1.5rem;text-align:center;position:relative;transition:border-color .2s}
+.how-card:hover{border-color:var(--red)}
+.how-num{font-family:var(--font-head);font-size:3rem;font-weight:700;color:rgba(214,40,40,.2);margin-bottom:.5rem;line-height:1}
+.how-icon{font-size:2.2rem;margin-bottom:.75rem;display:block}
+.how-title{font-family:var(--font-head);font-size:1.1rem;font-weight:600;color:var(--yellow);margin-bottom:.5rem}
+.how-desc{font-size:14px;color:var(--lightgray);line-height:1.6}
+
+/* ── FEATURES ── */
+.features-section{background:var(--dark2)}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem}
+.feature-card{background:var(--dark);border:1px solid var(--dark3);border-radius:12px;padding:1.5rem;transition:all .2s;cursor:default}
+.feature-card:hover{border-color:rgba(214,40,40,.4);transform:translateY(-3px)}
+.feature-icon{font-size:1.8rem;margin-bottom:.75rem;display:block}
+.feature-title{font-weight:700;font-size:15px;margin-bottom:.4rem;color:var(--white)}
+.feature-desc{font-size:13px;color:var(--lightgray);line-height:1.6}
+
+/* ── DEMO CALL ── */
+.demo-wrap{max-width:700px;margin:0 auto}
+.phone-frame{background:var(--dark2);border:1px solid var(--dark3);border-radius:16px;overflow:hidden}
+.phone-top{background:var(--dark);padding:1rem 1.25rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--dark3)}
+.phone-avatar{width:38px;height:38px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.phone-info h4{font-size:14px;font-weight:700}
+.phone-info p{font-size:11px;color:var(--gray)}
+.live-badge{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);font-weight:700}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:livepulse 1.5s infinite}
+@keyframes livepulse{0%,100%{opacity:1}50%{opacity:.2}}
+.phone-msgs{padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;min-height:220px}
+.pmsg{max-width:80%;padding:.65rem 1rem;border-radius:10px;font-size:13px;line-height:1.55}
+.pmsg.bot{background:var(--dark3);color:var(--lightgray);align-self:flex-start;border-radius:10px 10px 10px 2px}
+.pmsg.user{background:var(--red);color:var(--white);align-self:flex-end;border-radius:10px 10px 2px 10px}
+.pmsg-name{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;opacity:.5;margin-bottom:3px}
+.phone-btns{padding:.75rem 1.25rem 1.25rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.demo-chip{background:var(--dark3);color:var(--lightgray);border:1px solid #444;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.demo-chip:hover{background:var(--red);color:var(--white);border-color:var(--red)}
+
+/* ── PRICING ── */
+.pricing-section{background:var(--dark2)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:960px;margin:0 auto}
+.plan{background:var(--dark);border:1px solid var(--dark3);border-radius:16px;padding:2rem;position:relative;transition:all .2s}
+.plan.featured{border-color:var(--red);background:linear-gradient(160deg,#1e0a0a,var(--dark))}
+.plan-popular{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--red);color:var(--white);font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;letter-spacing:.5px}
+.plan-name{font-family:var(--font-head);font-size:1.2rem;color:var(--yellow);margin-bottom:.25rem}
+.plan-price{font-family:var(--font-head);font-size:2.8rem;font-weight:700;margin:.5rem 0 .25rem;line-height:1}
+.plan-price sup{font-size:1.2rem;vertical-align:top;margin-top:.4rem;display:inline-block}
+.plan-price span{font-size:.9rem;color:var(--gray);font-family:var(--font-body);font-weight:400}
+.plan-desc{font-size:13px;color:var(--gray);margin-bottom:1.5rem;line-height:1.5}
+.plan-features{list-style:none;margin-bottom:1.75rem;display:flex;flex-direction:column;gap:.5rem}
+.plan-features li{font-size:13px;color:var(--lightgray);display:flex;align-items:flex-start;gap:.5rem;line-height:1.5}
+.plan-features li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.plan-btn{width:100%;padding:13px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--font-body);transition:all .2s;text-align:center;text-decoration:none;display:block;border:none}
+.plan-btn.solid{background:var(--red);color:var(--white)}
+.plan-btn.solid:hover{background:var(--red-dark)}
+.plan-btn.outline{background:transparent;color:var(--white);border:2px solid rgba(255,255,255,.2)}
+.plan-btn.outline:hover{border-color:rgba(255,255,255,.5)}
+
+/* ── TESTIMONIALS ── */
+.testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.testi{background:var(--dark2);border:1px solid var(--dark3);border-radius:14px;padding:1.5rem}
+.testi-text{font-size:14px;color:var(--lightgray);line-height:1.7;margin-bottom:1rem;font-style:italic}
+.testi-text::before{content:'"';color:var(--red);font-size:2rem;font-family:var(--font-head);line-height:.5;display:block;margin-bottom:.5rem}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-avatar{width:36px;height:36px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.testi-name{font-size:13px;font-weight:700}
+.testi-shop{font-size:12px;color:var(--gray)}
+.stars{color:var(--yellow);font-size:12px;margin-bottom:.5rem}
+
+/* ── CTA ── */
+.cta-section{background:var(--red);text-align:center;padding:5rem 2rem}
+.cta-section h2{font-family:var(--font-head);font-size:clamp(2rem,5vw,3rem);font-weight:700;margin-bottom:1rem}
+.cta-section p{font-size:1.05rem;opacity:.9;margin-bottom:2rem;max-width:500px;margin-left:auto;margin-right:auto}
+.btn-white{background:var(--white);color:var(--red);padding:15px 36px;border-radius:8px;font-weight:800;font-size:15px;text-decoration:none;transition:all .2s;display:inline-block}
+.btn-white:hover{transform:translateY(-2px);background:var(--off)}
+
+/* ── FOOTER ── */
+footer{background:var(--dark2);border-top:1px solid var(--dark3);padding:3rem 2rem 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;max-width:1100px;margin:0 auto 2rem}
+.footer-brand .logo{font-size:1.3rem;margin-bottom:.75rem;display:inline-flex}
+.footer-brand p{font-size:13px;color:var(--gray);line-height:1.6;max-width:240px}
+.footer-col h4{font-size:13px;font-weight:700;color:var(--white);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.5px}
+.footer-col a{display:block;font-size:13px;color:var(--gray);text-decoration:none;margin-bottom:.4rem;transition:color .2s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{border-top:1px solid var(--dark3);padding-top:1.5rem;text-align:center;font-size:12px;color:var(--gray);max-width:1100px;margin:0 auto}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:2rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--dark2);border:1px solid var(--dark3);border-radius:16px;padding:2rem;max-width:480px;width:100%;position:relative}
+.modal h3{font-family:var(--font-head);font-size:1.5rem;margin-bottom:.5rem}
+.modal p{font-size:13px;color:var(--gray);margin-bottom:1.25rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--gray);font-size:1.25rem;cursor:pointer}
+.form-group{margin-bottom:.75rem}
+.form-group label{font-size:12px;font-weight:700;color:var(--lightgray);display:block;margin-bottom:4px}
+.form-group input,.form-group select{width:100%;background:var(--dark);border:1px solid var(--dark3);border-radius:8px;padding:10px 14px;color:var(--white);font-size:14px;font-family:var(--font-body);outline:none;transition:border .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--red)}
+.form-group select option{background:var(--dark2)}
+.submit-btn{width:100%;padding:13px;background:var(--red);color:var(--white);border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;font-family:var(--font-body);margin-top:.5rem;transition:background .2s}
+.submit-btn:hover{background:var(--red-dark)}
+.form-note{font-size:11px;color:var(--gray);text-align:center;margin-top:.75rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-brand{grid-column:1/-1}
+}
+@media(max-width:480px){
+  .stat{padding:.75rem 1.25rem}
+  .footer-grid{grid-template-columns:1fr}
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;animation:fadeUp .6s ease forwards}
+.fade-up:nth-child(1){animation-delay:.1s}
+.fade-up:nth-child(2){animation-delay:.2s}
+.fade-up:nth-child(3){animation-delay:.3s}
+.fade-up:nth-child(4){animation-delay:.4s}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">🍕 PizzaBoy<em>.ai</em> <span class="logo-badge">Beta</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#demo">Demo</a></li>
+  </ul>
+  <a href="#" class="nav-cta" onclick="openModal()">Start Free Trial</a>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pizza">🍕</div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">🍕 AI Receptionist for Pizza Shops</div>
+    <h1>Never Miss<br>Another <em>Order.</em></h1>
+    <p>PizzaBoy.ai answers every call 24/7, takes orders, upsells add-ons, and books catering — trained specifically for pizza shops. Set up in 10 minutes.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" onclick="openModal()">🎙️ Start Free Trial</a>
+      <a href="#demo" class="btn-secondary">Watch Demo</a>
+    </div>
+    <p class="hero-note">14-day free trial · No credit card required · Cancel anytime</p>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Always Answering</div></div>
+  <div class="stat"><div class="stat-num">+32%</div><div class="stat-label">Avg Upsell Rate</div></div>
+  <div class="stat"><div class="stat-num">&lt;2s</div><div class="stat-label">Answer Time</div></div>
+  <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Order Accuracy</div></div>
+  <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Shops Served</div></div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Up and running in 10 minutes</h2>
+    <p class="section-sub">No tech skills needed. We handle everything.</p>
+    <div class="how-grid">
+      <div class="how-card fade-up">
+        <div class="how-num">01</div>
+        <span class="how-icon">📞</span>
+        <div class="how-title">We get you a number</div>
+        <div class="how-desc">We set up a local phone number for your shop. Forward your existing number or use ours.</div>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">02</div>
+        <span class="how-icon">🍕</span>
+        <div class="how-title">We load your menu</div>
+        <div class="how-desc">Tell us your pizzas, prices, hours, and specials. The AI learns your menu in minutes.</div>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">03</div>
+        <span class="how-icon">🤖</span>
+        <div class="how-title">AI answers every call</div>
+        <div class="how-desc">Customers call, PizzaBoy.ai answers instantly — takes orders, upsells, books appointments.</div>
+      </div>
+      <div class="how-card fade-up">
+        <div class="how-num">04</div>
+        <span class="how-icon">📊</span>
+        <div class="how-title">You watch it all live</div>
+        <div class="how-desc">Every call, order, and upsell shows up in your dashboard in real time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features-section">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything your pizzeria needs</h2>
+    <p class="section-sub">One AI, trained specifically for pizza shops</p>
+    <div class="features-grid">
+      <div class="feature-card"><span class="feature-icon">📞</span><div class="feature-title">Smart call answering</div><div class="feature-desc">Answers every call instantly with your shop's name, menu, and hours. Handles multiple calls at once.</div></div>
+      <div class="feature-card"><span class="feature-icon">🛒</span><div class="feature-title">Accurate order taking</div><div class="feature-desc">Captures full orders — size, toppings, extras, address — and fires them to your POS system.</div></div>
+      <div class="feature-card"><span class="feature-icon">📅</span><div class="feature-title">Appointment scheduling</div><div class="feature-desc">Books catering, birthday parties, and large pickups. Syncs with your calendar automatically.</div></div>
+      <div class="feature-card"><span class="feature-icon">💸</span><div class="feature-title">Smart upselling</div><div class="feature-desc">Naturally suggests sides, drinks, and desserts — boosting average order value by 20–35%.</div></div>
+      <div class="feature-card"><span class="feature-icon">🌐</span><div class="feature-title">Multilingual</div><div class="feature-desc">Speaks English, Spanish, and more. Never lose a customer due to a language barrier.</div></div>
+      <div class="feature-card"><span class="feature-icon">🔗</span><div class="feature-title">POS integration</div><div class="feature-desc">Connects with Toast, Square, and Clover. Orders flow in directly — no manual entry.</div></div>
+      <div class="feature-card"><span class="feature-icon">⭐</span><div class="feature-title">Review follow-up</div><div class="feature-desc">Automatically texts happy customers asking for a Google review after their order.</div></div>
+      <div class="feature-card"><span class="feature-icon">📊</span><div class="feature-title">Live dashboard</div><div class="feature-desc">See every call, order, and upsell in real time. Peak hours, top items, revenue — all in one place.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="container">
+    <div class="section-label">Live demo</div>
+    <h2 class="section-title">Hear it in action</h2>
+    <p class="section-sub">Click a scenario to see how PizzaBoy.ai handles real calls</p>
+    <div class="demo-wrap">
+      <div class="phone-frame">
+        <div class="phone-top">
+          <div class="phone-avatar">🍕</div>
+          <div class="phone-info"><h4>PizzaBoy.ai</h4><p>Mama Rosa's Pizzeria</p></div>
+          <div class="live-badge"><div class="live-dot"></div> Live AI</div>
+        </div>
+        <div class="phone-msgs" id="demoMsgs">
+          <div class="pmsg bot"><div class="pmsg-name">PizzaBoy.ai</div>Thank you for calling Mama Rosa's! I'm your AI assistant. How can I help you today?</div>
+        </div>
+        <div class="phone-btns">
+          <button class="demo-chip" onclick="runDemo('order')">🍕 Order pizza</button>
+          <button class="demo-chip" onclick="runDemo('upsell')">💸 Watch upsell</button>
+          <button class="demo-chip" onclick="runDemo('catering')">🎉 Book catering</button>
+          <button class="demo-chip" onclick="runDemo('hours')">🕐 Ask hours</button>
+          <button class="demo-chip" onclick="resetDemo()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--dark2)">
+  <div class="container">
+    <div class="section-label">Reviews</div>
+    <h2 class="section-title">Pizza shops love it</h2>
+    <p class="section-sub">Real results from real shop owners</p>
+    <div class="testimonials-grid">
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <div class="testi-text">We were missing 30+ calls a day during the lunch rush. PizzaBoy.ai solved it overnight. Our revenue went up $4,000 in the first month.</div>
+        <div class="testi-author"><div class="testi-avatar">MR</div><div><div class="testi-name">Marco Romano</div><div class="testi-shop">Romano's Pizza, Miami FL</div></div></div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <div class="testi-text">The upselling alone pays for the subscription 10 times over. It suggested garlic knots on 8 out of 10 calls and most people said yes!</div>
+        <div class="testi-author"><div class="testi-avatar">JS</div><div><div class="testi-name">Jenny Salazar</div><div class="testi-shop">Slice of Heaven, Tampa FL</div></div></div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <div class="testi-text">Setup took 10 minutes. Now I don't have to worry about staffing the phones on Friday night. It just works.</div>
+        <div class="testi-author"><div class="testi-avatar">TN</div><div><div class="testi-name">Tony Nguyen</div><div class="testi-shop">Tony's Pies, Orlando FL</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, honest pricing</h2>
+    <p class="section-sub">No setup fees. No contracts. Built for pizza shops.</p>
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><sup>$</sup>99<span>/month</span></div>
+        <div class="plan-desc">Perfect for a single-location shop just getting started</div>
+        <ul class="plan-features">
+          <li>Up to 300 calls/month</li>
+          <li>Order taking & confirmation</li>
+          <li>Basic upselling</li>
+          <li>Email transcripts</li>
+          <li>1 phone number</li>
+          <li>Dashboard access</li>
+        </ul>
+        <a href="#" class="plan-btn outline" onclick="openModal()">Get started</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-popular">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><sup>$</sup>249<span>/month</span></div>
+        <div class="plan-desc">For busy shops that want the full AI experience</div>
+        <ul class="plan-features">
+          <li>Unlimited calls</li>
+          <li>Full order management</li>
+          <li>Smart upselling AI</li>
+          <li>Appointment scheduling</li>
+          <li>POS integration (Toast, Square)</li>
+          <li>Multilingual support</li>
+          <li>Review follow-up texts</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="plan-btn solid" onclick="openModal()">Start free trial</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price" style="font-size:2rem">Custom</div>
+        <div class="plan-desc">For chains and franchise groups with multiple locations</div>
+        <ul class="plan-features">
+          <li>Multi-location management</li>
+          <li>Custom AI voice & name</li>
+          <li>Branded experience</li>
+          <li>API access</li>
+          <li>Dedicated account manager</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="mailto:hello@pizzaboy.ai" class="plan-btn outline">Contact sales</a>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:2rem;font-size:13px;color:var(--gray)">All plans include a 14-day free trial. No credit card required.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Ready to stop missing calls?</h2>
+  <p>Set up in 10 minutes. No tech skills needed. Your AI receptionist is waiting.</p>
+  <a href="#" class="btn-white" onclick="openModal()">Start Your Free 14-Day Trial</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">🍕 PizzaBoy<em style="color:var(--red);font-style:normal">.ai</em></a>
+      <p>AI-powered phone receptionist built specifically for pizza shops. Never miss a call, never miss an order.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#demo">Demo</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Blog</a>
+      <a href="mailto:hello@pizzaboy.ai">Contact</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Security</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 PizzaBoy.ai — All rights reserved · <a href="mailto:hello@pizzaboy.ai" style="color:var(--red);text-decoration:none">hello@pizzaboy.ai</a></div>
+</footer>
+
+<!-- SIGNUP MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>🍕 Start Your Free Trial</h3>
+    <p>14 days free. No credit card. Set up in 10 minutes.</p>
+    <div class="form-group"><label>Your name</label><input type="text" placeholder="Tony Romano"></div>
+    <div class="form-group"><label>Pizza shop name</label><input type="text" placeholder="Tony's Pizzeria"></div>
+    <div class="form-group"><label>Email address</label><input type="email" placeholder="tony@yourpizza.com"></div>
+    <div class="form-group"><label>Phone number</label><input type="tel" placeholder="+1 (305) 555-0100"></div>
+    <div class="form-group"><label>Plan</label>
+      <select>
+        <option>Starter — $99/month</option>
+        <option selected>Pro — $249/month (Most Popular)</option>
+        <option>Enterprise — Custom</option>
+      </select>
+    </div>
+    <button class="submit-btn" onclick="submitForm()">Start Free Trial →</button>
+    <p class="form-note">By signing up you agree to our Terms of Service and Privacy Policy</p>
+  </div>
+</div>
+
+<script>
+var demoScripts={
+  order:[
+    {r:'user',t:"Hi I'd like a large pepperoni pizza for delivery."},
+    {r:'bot',t:"Great choice! Large pepperoni is $18.99. Can I get your delivery address?"},
+    {r:'user',t:"123 Main Street, Apartment 4B."},
+    {r:'bot',t:"Got it! Would you like to add a 2-liter soda for just $2.99? It pairs great with pepperoni 🥤"},
+    {r:'user',t:"Sure, add it!"},
+    {r:'bot',t:"Perfect! Total is $21.98. Delivery in about 35 minutes. Confirmation text sent! 🍕"}
+  ],
+  upsell:[
+    {r:'user',t:"Just a medium cheese pizza please."},
+    {r:'bot',t:"Of course! Medium cheese is $14.99. Quick question — feeding just yourself tonight?"},
+    {r:'user',t:"Yeah just me."},
+    {r:'bot',t:"We have a special today — add 6 garlic knots for $3.99 instead of the usual $5.99. Most people grab them! Want to add those?"},
+    {r:'user',t:"Yeah ok add them."},
+    {r:'bot',t:"Love it! Total is $18.98 — you saved $2! Ready in about 20 minutes. 🎉"}
+  ],
+  catering:[
+    {r:'user',t:"I need catering for a birthday party, about 40 people."},
+    {r:'bot',t:"How fun! For 40 people I'd suggest our Corporate Pack — 8 large pizzas, 3 sides, and drinks for $219. Does that work?"},
+    {r:'user',t:"Yes perfect. Can we do Saturday April 22nd?"},
+    {r:'bot',t:"April 22nd is available! What time? And I'll need your name and a callback number to lock it in. 📅"}
+  ],
+  hours:[
+    {r:'user',t:"What are your hours today?"},
+    {r:'bot',t:"We're open today 11am to 11pm! We also do online orders. Anything else I can help you with?"},
+    {r:'user',t:"Do you have gluten free?"},
+    {r:'bot',t:"Yes! Gluten-free crust on any pizza for just $3 extra. Our veggie and cheese pizzas are customer favorites on it. Want to place an order?"}
+  ]
+};
+
+function runDemo(name){
+  var msgs=document.getElementById('demoMsgs');
+  msgs.innerHTML='<div class="pmsg bot"><div class="pmsg-name">PizzaBoy.ai</div>Thank you for calling Mama Rosa\'s! I\'m your AI assistant. How can I help you today?</div>';
+  var lines=demoScripts[name];
+  var i=0;
+  function next(){
+    if(i>=lines.length)return;
+    var l=lines[i];
+    var d=document.createElement('div');
+    d.className='pmsg '+l.r;
+    d.innerHTML=(l.r==='bot'?'<div class="pmsg-name">PizzaBoy.ai</div>':'')+l.t;
+    msgs.appendChild(d);
+    msgs.scrollTop=msgs.scrollHeight;
+    i++;
+    setTimeout(next,l.r==='bot'?1800:1100);
+  }
+  setTimeout(next,500);
+}
+
+function resetDemo(){
+  document.getElementById('demoMsgs').innerHTML='<div class="pmsg bot"><div class="pmsg-name">PizzaBoy.ai</div>Thank you for calling Mama Rosa\'s! I\'m your AI assistant. How can I help you today?</div>';
+}
+
+function openModal(){
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  return false;
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+function closeModalOutside(e){
+  if(e.target===document.getElementById('modal'))closeModal();
+}
+
+function submitForm(){
+  alert('🍕 Thanks for signing up! We\'ll be in touch within 24 hours to get you set up.');
+  closeModal();
+}
+
+function toggleMenu(){
+  var nl=document.querySelector('.nav-links');
+  nl.style.display=nl.style.display==='flex'?'none':'flex';
+  nl.style.flexDirection='column';
+  nl.style.position='absolute';
+  nl.style.top='64px';
+  nl.style.left='0';
+  nl.style.right='0';
+  nl.style.background='#111';
+  nl.style.padding='1rem 2rem';
+  nl.style.borderBottom='1px solid #333';
+}
+</script>
+</body>
+</html>
